@@ -15,33 +15,58 @@ if sys.platform.startswith('win32'):
     path2 = "-L" + python_path + "\\libs"
     os.system('bash pre.sh ' + python_path + ' ' + version)
 
-    cbess_module = Extension(name='BeSS._cbess',
-                          sources=['src/bess_lm.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/bess.i',
-                                   'src/bess_cox.cpp', 'src/bess_cox_group.cpp', 'src/bess_glm.cpp', 'src/bess_glm_group.cpp',
+    cbess_module = Extension(name='bess._cbess',
+                          sources=['src/bess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/bess.i',
+                                   'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
                                    'src/logistic.cpp', 'src/tmp.cpp', 'src/coxph.cpp'],
                           language='c++',
                           extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
                           extra_link_args=['-lgomp'],
                           libraries=["vcruntime140"],
-                          include_dirs = ["BeSS", numpy.get_include()],
+                          include_dirs = ["bess", numpy.get_include(), "include"],
                           swig_opts=["-c++"]
                           )
 
 else:
-    cbess_module = Extension(name='BeSS._cbess',
+    cbess_module = Extension(name='bess._cbess',
                           sources=['src/bess_lm.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/bess.i'],
                           language='c++',
                           extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11"],
                           extra_link_args=['-lgomp'],
                           libraries=["vcruntime140"],
-                          include_dirs = ["BeSS", numpy.get_include()],
+                          include_dirs = ["bess", numpy.get_include()],
                           swig_opts=["-c++"]
                           )
 
-setup(name='BeSS',
-      version='1.0.0',
-      description='BeSS',
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md')) as f:
+      long_description = f.read()
+
+setup(name='bess',
+      version='0.0.1',
+      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Shijie Quan, Xueqin Wang",
+      author_email="jiangkk3@mail2.sysu.edu.cn",
+      maintainer="Kangkang Jiang",
+      maintainer_email="jiangkk3@mail2.sysu.edu.cn",
       packages=find_packages(),
+      description="bess Python Package",
+      long_description=long_description,
+      long_description_content_type="text/plain",
+      install_requires=[
+          'numpy'
+      ],
+      license="GPL-3",
+      # url="",
+      classifiers=[
+            "Topic :: Scientific/Engineering",
+            "Topic :: Scientific/Engineering :: Bio-Informatics",
+            "Topic :: Scientific/Engineering :: Information Analysis",
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 3.5",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7"
+      ],
+      python_requires='>=3.5',
       ext_modules=[cbess_module]
       )
 
