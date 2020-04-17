@@ -29,7 +29,7 @@ public:
 
     Data() = default;
 
-    Data(Eigen::MatrixXd &x, Eigen::VectorXd &y, int data_type, Eigen::VectorXd weight, bool is_normal) {
+    Data(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight, bool is_normal) {
         this->x = x;
         this->y = y;
         this->data_type = data_type;
@@ -38,6 +38,8 @@ public:
 
         this->weight = weight;
         this->is_normal = is_normal;
+        this->x_mean = Eigen::VectorXd::Zero(this->p);
+        this->x_norm = Eigen::VectorXd::Zero(this->p);
 
         if(is_normal){
             this->normalize();
@@ -45,20 +47,22 @@ public:
     };
 
     void add_weight() {
-        int i;
-        for(i=0;i<n;i++){
+        for(int i=0;i<this->n;i++){
             this->x.row(i) = this->x.row(i)*sqrt(this->weight(i));
             this->y(i) = this->y(i)*sqrt(this->weight(i));
         }
     };
 
     void normalize() {
+//        std::cout<<"normalize"<<endl;
         if(this->data_type == 1){
             Normalize(this->x, this->y, this->weight, this->x_mean, this->y_mean, this->x_norm);
         }
         else{
+//            std::cout<<"normalize"<<endl;
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
         }
+//        std::cout<<"normalize end"<<endl;
         // reload this method for different data type
     };
 

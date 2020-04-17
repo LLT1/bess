@@ -26,6 +26,7 @@ void Normalize(Eigen::MatrixXd& X, Eigen::VectorXd& y, Eigen::VectorXd& weights,
         X.col(i) = X.col(i).array() - meanx(i);
     }
     y = y.array() - meany;
+
     for(int i=0;i<p;i++){
         tmp = X.col(i);
         tmp = tmp.array().square();
@@ -39,20 +40,25 @@ void Normalize3(Eigen::MatrixXd& X, Eigen::VectorXd& weights, Eigen::VectorXd& m
     int n = X.rows();
     int p = X.cols();
     Eigen::VectorXd tmp(n);
+//    std::cout<<"normal_1"<<endl;
     for(int i=0;i<p;i++){
         meanx(i) = weights.dot(X.col(i))/double(n);
     }
+//    std::cout<<"normal_2"<<endl;
     for(int i=0;i<p;i++){
         X.col(i) = X.col(i).array() - meanx(i);
     }
+//    std::cout<<"normal_3"<<endl;
     for(int i=0;i<p;i++){
         tmp = X.col(i);
         tmp = tmp.array().square();
         normx(i) = sqrt(weights.dot(tmp));
     }
+//    std::cout<<"normal_4"<<endl;
     for(int i=0;i<p;i++){
         X.col(i) = sqrt(double(n))*X.col(i)/normx(i);
     }
+//    std::cout<<"normal_5"<<endl;
 }
 // [[Rcpp::export]]
 List Normalize2(Eigen::MatrixXd& X, Eigen::VectorXd& weights){

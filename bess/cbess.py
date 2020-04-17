@@ -62,7 +62,7 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, arg14, coef0_, arg16, s_min, s_max, K_max, epsilon, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28):
-    return _cbess.pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, arg14, coef0_, arg16, s_min, s_max, K_max, epsilon, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28)
+def pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, arg14, arg15, s_min, s_max, K_max, epsilon, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27):
+    return _cbess.pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, arg14, arg15, s_min, s_max, K_max, epsilon, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27)
 
 

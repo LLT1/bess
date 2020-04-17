@@ -17,7 +17,6 @@ List bess(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd w
         int algorithm_type, int model_type, int max_iter,
         int path_type, bool is_warm_start,
         int ic_type, bool is_cv, int K,
-        double coef0,
         Eigen::VectorXd state,
         Eigen::VectorXi sequence,
         int s_min, int s_max, int K_max, double epsilon){
@@ -36,15 +35,33 @@ List bess(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd w
         }
         else if(model_type == 2) {
 //            std::cout<<"model type "<<model_type<<endl;
-            algorithm = new PdasLogistic(data, max_iter, coef0);
+            algorithm = new PdasLogistic(data, max_iter);
+        }
+        else if(model_type == 3) {
+//            std::cout<<"model type "<<model_type<<endl;
+            algorithm = new PdasPoisson(data, max_iter);
+        }
+        else if(model_type == 4) {
+//            std::cout<<"model type "<<model_type<<endl;
+            algorithm = new PdasCox(data, max_iter);
         }
     }
     else if (algorithm_type == 2){
         if (model_type == 1) {
             data.add_weight();
             algorithm = new GroupPdasLm(data, max_iter);
-        } else if (model_type == 2) {
-            algorithm = new GroupPdasLogistic(data, max_iter, coef0);
+        }
+        else if (model_type == 2)
+        {
+            algorithm = new GroupPdasLogistic(data, max_iter);
+        }
+        else if (model_type == 3)
+        {
+            algorithm = new GroupPdasPoisson(data, max_iter);
+        }
+        else if (model_type == 4)
+        {
+            algorithm = new GroupPdasCox(data, max_iter);
         }
     }
 
@@ -54,6 +71,12 @@ List bess(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd w
     }
     else if(model_type == 2) {
         metric = new LogisticMetric(ic_type, is_cv, K);
+    }
+    else if(model_type == 3) {
+        metric = new PoissonMetric(ic_type, is_cv, K);
+    }
+    else if(model_type == 4) {
+        metric = new CoxMetric(ic_type, is_cv, K);
     }
 
     List result;
@@ -74,7 +97,6 @@ void pywrap_bess(double* x, int x_row, int x_col, double* y, int y_len, int data
                  int path_type, bool is_warm_start,
                  int ic_type, bool is_cv, int K,
                  double* state, int state_len,
-                 double coef0_,
                  int* sequence, int sequence_len,
                  int s_min, int s_max, int K_max, double epsilon,
                  double* beta_out, int beta_out_len, double* coef0_out, int coef0_out_len, double* train_loss_out, int train_loss_out_len, double* ic_out, int ic_out_len, double* nullloss_out, double* aic_out, int aic_out_len, double* bic_out, int bic_out_len, double* gic_out, int gic_out_len, int* A_out, int A_out_len, int* l_out
@@ -94,7 +116,7 @@ void pywrap_bess(double* x, int x_row, int x_col, double* y, int y_len, int data
 
 //    std::cout<<"pywrap"<<endl;
     List mylist = bess(x_Mat, y_Vec, data_type, weight_Vec, is_normal,
-            algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, coef0_, state_Vec, sequence_Vec,
+            algorithm_type, model_type, max_iter, path_type, is_warm_start, ic_type, is_cv, K, state_Vec, sequence_Vec,
             s_min, s_max, K_max, epsilon);
 //    std::cout<<"pywrap_2"<<endl;
 

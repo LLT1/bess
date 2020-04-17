@@ -1,63 +1,111 @@
-Metadata-Version: 1.2
-Name: Ball
-Version: 0.2.2
-Summary: Ball Python Package
-Home-page: https://github.com/Mamba413/Ball
-Author: Xueqin Wang, Wenliang Pan, Heping Zhang, Hongtu Zhu, Yuan Tian, Weinan Xiao, Chengfeng Liu, Ruihuang Liu, Jin Zhu, Yanhang Zhang
-Author-email: zhangyh93@mail2.sysu.edu.cn
-Maintainer: Yanhang Zhang
-Maintainer-email: zhangyh93@mail2.sysu.edu.cn
+Metadata-Version: 2.1
+Name: bess
+Version: 0.0.8
+Summary: bess Python Package
+Home-page: https://github.com/Mamba413/bess
+Author: Kangkang Jiang, Jin Zhu, Yanhang Zhang, Shijie Quan, Xueqin Wang
+Author-email: jiangkk3@mail2.sysu.edu.cn
+Maintainer: Kangkang Jiang
+Maintainer-email: jiangkk3@mail2.sysu.edu.cn
 License: GPL-3
-Description:  Ball Statistics
-        ================
+Description: # bess: An python Package for Best Subset Selection
         
-        Introduction
-        ------------
-        The fundamental problems for data mining and statistical analysis are:
         
-        -  Whether distributions of two samples are distinct?
+        ## Introduction
         
-        -  Whether two random variables are dependent?
+        One of the main tasks of statistical modeling is to exploit the association between
+        a response variable and multiple predictors. Linear model (LM), as a simple parametric
+        regression model, is often used to capture linear dependence between response and
+        predictors. Generalized linear model (GLM) can be considered as
+        the extensions of linear model, depending on the types of responses. Parameter estimation in these models
+        can be computationally intensive when the number of predictors is large. Meanwhile,
+        Occam's razor is widely accepted as a heuristic rule for statistical modeling,
+        which balances goodness of fit and model complexity. This rule leads to a relative 
+        small subset of important predictors. 
         
-        **Ball** package provides solutions for these issues. Moreover, a
-        variable screening (or feature screening) procedure is also implemented
-        to tackle ultra high dimensional data. The core functions in **Ball**
-        package are **bd_test**, **bd**, **bcov_test**, **bcov**, **bcorsis** and
-        **bcor**.
+        **bess** package provides solutions for best subset selection problem for sparse LM,
+        and GLM models.
         
-        These functions based on ball statistic have several advantages:
+        We consider a primal-dual active set (PDAS) approach to exactly solve the best subset
+        selection problem for sparse LM and GLM models. The PDAS algorithm for linear 
+        least squares problems was first introduced by [Ito and Kunisch (2013)](https://iopscience.iop.org/article/10.1088/0266-5611/30/1/015001)
+        and later discussed by [Jiao, Jin, and Lu (2015)](https://arxiv.org/abs/1403.0515) and [Huang, Jiao, Liu, and Lu (2017)](https://arxiv.org/abs/1701.05128). 
+        It utilizes an active set updating strategy and fits the sub-models through use of
+        complementary primal and dual variables. We generalize the PDAS algorithm for 
+        general convex loss functions with the best subset constraint, and further 
+        extend it to support both sequential and golden section search strategies
+        for optimal k determination. 
         
-        -  It's applicable to univariate and multivariate data in Banach space.
         
-        -  There is no need for moment assumption, which means that outliers and
-           heavy-tail data are no longer a problem.
+        ## Install
         
-        -  They perform well in many setting without complex adjustments for
-           parameters.
+        Python Version
+        - python >= 3.5
         
-        Particularly, for two-sample or K-sample problem, **bd_test** has been
-        proved to cope well for imbalanced data, and **bcov_test** and
-        **bcorsis** work well for detecting the relationship between complex
-        responses and/or predictors, such as shape, compositional as well as
-        censored data.
+        Modules needed
+        - numpy 
         
-        Install instructions
-        --------------------
-        We recommend that compile C++ files by gcc instead of Visual Studio.
-        You could download MinGW (https://sourceforge.net/projects/mingw/) and then
-        add the path ``MinGW/bin`` to system environment variable "path".
+        The package has been publish in PyPI. You can easy install by:
+        ```sh
+        $ pip install bess
+        ```
         
-        Anaconda3 is needed, and the version should be greater than 3.4. You should 
-        add all the related path of Anaconda3 to system environment variable "path",
-        as well as the path of ``MinGW/bin``.
+        ## Example
+        ```python
+        from bess.linear import PdasLm, PdasLogistic, PdasPoisson
+        import numpy as np
+        np.random.seed(12345)
         
-        Then you can pip install the Ball package!
+        ### PdasLm sample
+        x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
+        beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
+        noise = np.random.normal(0, 1, 100)
+        y = np.matmul(x, beta) + noise      # test_x
+        model = PdasLm(path_type = "seq", sequence = [5])
+        model.fit(X = x, y = y)
+        print(np.nonzero(model.beta))
+        print(model.beta[0:5])
+        
+        
+        ### PdasLogistic sample
+        np.random.seed(12345)  
+        x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
+        beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
+        xbeta = np.matmul(x, beta)
+        p = np.exp(xbeta)/(1+np.exp(xbeta))
+        y = np.random.binomial(1, p)
+        model = PdasLogistic(path_type="seq", sequence=[5])
+        model.fit(X=x, y=y)
+        print(np.nonzero(model.beta))
+        print(model.beta[0:5])
+        
+        
+        ### PdasPoisson sample
+        np.random.seed(12345)
+        x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
+        beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
+        lam = np.exp(np.matmul(x, beta))
+        y = np.random.poisson(lam=lam)
+        model = PdasPoisson(path_type="seq", sequence=[5])
+        model.fit(x, y)
+        print(np.nonzero(model.beta))
+        ```
+        
+        ## Reference
+        
+        - Wen, C. , Zhang, A. , Quan, S. , & Wang, X. . (2017). [Bess: an r package for best subset selection in linear, logistic and coxph models](https://arxiv.org/pdf/1709.06254.pdf)
+        
+        
+        ## Bug report
+        
+        Connect to [@Jiang-Kangkang](https://github.com/Jiang-Kangkang), or send an email to Jiang Kangkang(jiangkk3@mail2.sysu.edu.cn)
+        
+        
 Platform: UNKNOWN
-Classifier: Topic :: Scientific/Engineering
-Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
-Classifier: Topic :: Scientific/Engineering :: Information Analysis
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3.5
 Classifier: Programming Language :: Python :: 3.6
 Classifier: Programming Language :: Python :: 3.7
-Requires-Python: >=3.4
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown

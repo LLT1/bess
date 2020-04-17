@@ -2,7 +2,7 @@
 #define LIST_H
  
 #include <iostream>
-#include "Eigen/Eigen"
+#include <Eigen/Eigen>
 #include <vector>
 using namespace std;
 using namespace Eigen;

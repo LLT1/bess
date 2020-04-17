@@ -20,7 +20,6 @@ void pywrap_bess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY1, int D
                  int path_type, bool is_warm_start,
                  int ic_type, bool is_cv, int K,
                  double* IN_ARRAY1, int DIM1,
-                 double coef0_,
                  int * IN_ARRAY1, int DIM1,
                  int s_min, int s_max, int K_max, double epsilon,
                  double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* OUTPUT, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, int* ARGOUT_ARRAY1, int DIM1, int*OUTPUT);

@@ -30,7 +30,6 @@ void pywrap_bess(double* x, int x_row, int x_col, double* y, int y_len, int data
                  int path_type, bool is_warm_start,
                  int ic_type, bool is_cv, int K,
                  double* state, int state_len,
-                 double coef0_,
                  int* sequence, int sequence_len,
                  int s_min, int s_max, int K_max, double epsilon,
                  double* beta_out, int beta_out_len, double* coef0_out, int coef0_out_len, double* train_loss_out, int train_loss_out_len, double* loss_out, int loss_out_len, double* nullloss_out, double* aic_out, int aic_out_len, double* bic_out, int bic_out_len, double* gic_out, int gic_out_len, int* A_out, int A_out_len, int* l_out

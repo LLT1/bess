@@ -5,6 +5,7 @@
 # @Site    : 
 # @File    : __init__.py.py
 
-from bess.bess import PdasLm, PdasLogistic
+from bess.linear import PdasLm, PdasLogistic, PdasPoisson, PdasCox
+from bess.gen_data import gen_data
 
 
